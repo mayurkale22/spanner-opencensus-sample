@@ -49,8 +49,8 @@ public class PersonController {
 
   private Spanner spanner;
   private final DatabaseClient dbClient;
-  private String instanceId = "wmt-test-instance";
-  private String databaseId = "mk-test";
+  private String instanceId = "sample-instance";
+  private String databaseId = "sample-db";
   String table = "person";
 
   private static final Tracer tracer = Tracing.getTracer();
