@@ -53,6 +53,7 @@ public class PersonController {
   private String databaseId = "sample-db";
   String table = "person";
 
+  // Get the global singleton Tracer object.
   private static final Tracer tracer = Tracing.getTracer();
 
   PersonController() throws IOException {
@@ -60,18 +61,33 @@ public class PersonController {
     String projectId = options.getProjectId();
     spanner = options.getService();
     dbClient = spanner.getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId));
+
+    // Register basic gRPC views.
     RpcViews.registerClientGrpcBasicViews();
 
+    // WARNING: Be careful before you set sampler value to always sample, especially in
+    // production environment. Trace data is often very large in size and is expensive to
+    // collect. This is why rather than collecting traces for every request(i.e. alwaysSample),
+    // downsampling is preferred.
+    //
+    // By default, OpenCensus provides a probabilistic sampler that will trace once in every
+    // 10,000 requests, that's why if default probabilistic sampler is used
+    // you might not see trace data printed or exported and this is expected behavior.
     TraceConfig traceConfig = Tracing.getTraceConfig();
     traceConfig.updateActiveTraceParams(
         traceConfig.getActiveTraceParams().toBuilder().setSampler(Samplers.alwaysSample()).build());
 
+    // Enable OpenCensus exporters to export metrics to Stackdriver Monitoring.
+    // The default export interval is 60 seconds. The thread with the StackdriverStatsExporter must
+    // live for at least the interval past any metrics that must be collected, or some risk being
+    // lost if they are recorded after the last export.
     StackdriverStatsExporter.createAndRegister(
         StackdriverStatsConfiguration.builder()
             .setProjectId(projectId)
             .setExportInterval(Duration.create(60, 0))
             .build());
 
+    // Enable OpenCensus exporters to export traces to Stackdriver Trace.
     StackdriverTraceExporter.createAndRegister(
         StackdriverTraceConfiguration.builder()
             .setProjectId(projectId)
@@ -81,6 +97,7 @@ public class PersonController {
   @GetMapping(path = "/read", produces = "application/json")
   public List<Person> read() {
     List<Person> list = new ArrayList<>();
+    // Create a scoped span, a scoped span will automatically end when closed.
     try (Scope ss = tracer.spanBuilder("read").startScopedSpan()) {
       try (ResultSet resultSet =
           dbClient
@@ -103,6 +120,7 @@ public class PersonController {
 
   @GetMapping(path = "/query", produces = "application/json")
   public List<Person> getPersonQuery() throws InterruptedException {
+    //  Create a scoped span, a scoped span will automatically end when closed.
     try (Scope ss = tracer.spanBuilder("query").startScopedSpan()) {
       List<Person> list = new ArrayList<>();
       try (ResultSet resultSet =
