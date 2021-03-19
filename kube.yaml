@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spannercensusgke
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spannercensusgke
+  template:
+    metadata:
+      labels:
+        app: spannercensusgke
+    spec:
+      volumes:
+      - name: google-cloud-key
+        secret:
+          secretName: spanner-key
+      containers:
+      - name: spannercensusgke
+        image: <image_path>
+        volumeMounts:
+        - name: google-cloud-key
+          mountPath: /var/secrets/google
+        ports:
+        - containerPort: 8080
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/google/key.json
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spannercensusgke
+spec:
+  type: LoadBalancer
+  selector:
+    app: spannercensusgke
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 30011
