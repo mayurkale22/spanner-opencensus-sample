@@ -1,4 +1,4 @@
-# Cloud Spanner With OpenCensus
+# Demo - Cloud Spanner With OpenCensus
 
 ## About Cloud Spanner
 
@@ -22,9 +22,8 @@ to understand the health of the application and debug problems.
 
 Read more [here](https://opencensus.io/).
 
-### Running Sample App (Locally)
-Please refer to the [getting
-started](https://cloud.google.com/spanner/docs/getting-started/java/) guide.
+### Running Sample App (Standalone/Locally)
+Instructions for setting up an end-to-end demo environment locally.
 
 ### 1. Set up Cloud Spanner with the Expected Schema
 
@@ -35,9 +34,9 @@ CREATE TABLE person (
 	id STRING(MAX),
 	name STRING(MAX),
 	email STRING(MAX),
-) PRIMARY KEY (id)
+) PRIMARY KEY (id);
 ```
-Make note of your project ID, instance ID, and database name.
+Make note of your instance ID, and database name.
 
 ### 2. Set Up Your Environment and Auth
 
@@ -67,7 +66,8 @@ Available endpoints:
  - For read request:  http://localhost:8080/spanner/read 
  - For query request:  http://localhost:8080/spanner/query
 
-### Running Sample App (k8s)
+### Running Sample App on Kubernetes
+Instructions for setting up an end-to-end demo environment on Kubernetes.
 
 ### 1. Build & Push Docker image
 
@@ -82,11 +82,12 @@ $ docker push gcr.io/<gcp_project>/spanner-census-gke:v1
 Update `<image_path>` in `kube.yaml` to pick up the newly uploaded image from
 Container Registry.
 
+Apply the sample YAML file:
 ```
 $ kubectl apply -f kube.yaml
 ```
 
-## Viewing your traces
+## Viewing your traces in Cloud Trace
 
 With the above you should now be able to navigate to the Stackdriver UI to see the traces.
 
@@ -100,7 +101,7 @@ which will produce such a screenshot:
 
 Please visit https://console.cloud.google.com/traces/traces
 
-## Viewing your metrics
+## Viewing your metrics in Cloud Monitoring
 
 [See](https://github.com/census-instrumentation/opencensus-specs/blob/master/stats/gRPC.md#grpc-stats) for all gRPC related metrics.
 
@@ -115,3 +116,7 @@ This shows total number of client RPCs ever opened, including those that have
 not completed.
 
 Please visit https://console.cloud.google.com/monitoring
+
+--------------------------------------------------------------------------------
+
+> WARNING: Be careful before you set sampler value to always sample, especially in production environment. Trace data is often very large in size and is expensive to collect. This is why rather than collecting traces for every request(i.e. alwaysSample), downsampling is preferred.
