@@ -86,6 +86,20 @@ Container Registry.
 $ kubectl apply -f kube.yaml
 ```
 
+## Viewing your traces
+
+With the above you should now be able to navigate to the Stackdriver UI to see the traces.
+
+which will produce such a screenshot:
+
+### 1. Sample Query Trace
+![Sample Query Trace](screenshots/query-trace.png)
+
+### 1. Sample Read Trace
+![Sample Read Trace](screenshots/read-trace.png)
+
+Please visit https://console.cloud.google.com/traces/traces
+
 ## Viewing your metrics
 
 [See](https://github.com/census-instrumentation/opencensus-specs/blob/master/stats/gRPC.md#grpc-stats) for all gRPC related metrics.
@@ -101,17 +115,3 @@ This shows total number of client RPCs ever opened, including those that have
 not completed.
 
 Please visit https://console.cloud.google.com/monitoring
-
-## Viewing your traces
-
-With the above you should now be able to navigate to the Stackdriver UI to see the traces.
-
-which will produce such a screenshot:
-
-### 1. Sample Query Trace
-![Sample Query Trace](screenshots/query-trace.png)
-
-### 1. Sample Read Trace
-![Sample Read Trace](screenshots/read-trace.png)
-
-Please visit https://console.cloud.google.com/traces/traces
