@@ -110,10 +110,21 @@ Please visit https://console.cloud.google.com/traces/traces
 This shows time between first byte of request sent to last byte of response
 received, or terminal error. in milliseconds.
 
+![Sample Read Trace](screenshots/roundtrip_latency.png)
+
 ### 2. grpc.io/client/started_rpcs
 
 This shows total number of client RPCs ever opened, including those that have
 not completed.
+
+![Sample Read Trace](screenshots/started_rpcs.png)
+
+### 3. cloud.google.com/java/spanner/gfe_latency
+
+This shows the length of time (in milliseconds) between Google's network
+receives an RPC and reads back the first byte of the response.
+
+![Sample Read Trace](screenshots/gfe_latency.png)
 
 Please visit https://console.cloud.google.com/monitoring
 
