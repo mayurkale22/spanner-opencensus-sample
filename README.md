@@ -126,6 +126,15 @@ receives an RPC and reads back the first byte of the response.
 
 ![Sample gfe_latency](screenshots/gfe_latency.png)
 
+
+### 4. E2E vs GFE vs Spanner API Request Latencies
+
+By comparing the latencies between Client (RoundTrip), GFE, Spanner API and
+Spanner query execution, you should now be able to narrow down the cause of
+slow Spanner operations.
+
+![Comparison](screenshots/roundtrip-gfe-spanfe-latencies.png)
+
 Please visit https://console.cloud.google.com/monitoring
 
 --------------------------------------------------------------------------------
